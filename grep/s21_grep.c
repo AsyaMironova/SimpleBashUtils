@@ -19,15 +19,6 @@ void parser(int argc, char *argv[], Flags *A) {
         A->e = 1;
         strcat(A->str_regexec, optarg);
         strcat(A->str_regexec, "|");
-        // printf("%s", A->str_regexec);
-
-        //     if (firstUseE) {
-        //   firstUseE = 0;
-        //   strcat(A->str_regexec, optarg);
-        // } else {
-        //   strcat(A->str_regexec, "|");
-        //   strcat(A->str_regexec, optarg);
-        // }
         break;
       case 'i':
         A->i = 1;
@@ -74,7 +65,6 @@ void parser(int argc, char *argv[], Flags *A) {
   }
   if (A->e || A->f) {
     A->str_regexec[strlen(A->str_regexec) - 1] = '\0';
-    // printf("%s\n", A->str_regexec);
   }
   if (argc - optind > 1) A->c_flag = 1;
 }
@@ -111,7 +101,7 @@ void output(char *argv[], Flags *A) {
           printf("%d:%s", str_number, A->str);
         if (A->str[strlen(A->str) - 1] != '\n') printf("\n");
       }
-      if (!match && A->o) {  // o
+      if (!match && A->o && !A->l && !A->c) {  // o
         char *pointer = A->str_o;
         while ((regexec(&reg, pointer, 1, &start, 0) == 0)) {
           printf("%.*s\n", (int)(start.rm_eo - start.rm_so),
@@ -143,6 +133,7 @@ void output(char *argv[], Flags *A) {
     if (!A->s)
       fprintf(stderr, "grep: %s: No such file or directory\n", argv[optind]);
   }
+  free(A->str_regexec);
 }
 
 void f_flag(Flags *A) {
