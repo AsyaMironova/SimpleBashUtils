@@ -5,7 +5,7 @@ int main(int argc, char *argv[]) {
   parser(argc, argv, &A);
   while (optind < argc) {
     output(argv, &A);
-    optind++;  //индекс одного элемента argv, не явл опцией
+    optind++;
   }
   return 0;
 }
@@ -71,7 +71,7 @@ void parser(int argc, char *argv[], Flags *A) {
 
 void output(char *argv[], Flags *A) {
   FILE *file;
-  regex_t reg;  //сохраняем рег выражения
+  regex_t reg;
   regmatch_t start;
   int counter = 0;
   int str_number = 0;
@@ -80,6 +80,7 @@ void output(char *argv[], Flags *A) {
     flag_i = REG_EXTENDED | REG_ICASE;
   }
   regcomp(&reg, A->str_regexec, flag_i);
+
   file = fopen(argv[optind], "rb");
   if (file != NULL) {
     while (fgets(A->str, BUFFER, file) != NULL) {
@@ -115,14 +116,14 @@ void output(char *argv[], Flags *A) {
     if (A->l && counter < 1 && A->v) {
       printf("%s\n", argv[optind]);
     }
-    if (A->l && counter > 0 && !A->c) printf("%s\n", argv[optind]);  // l
-    if (A->c && A->c_flag && !A->h) printf("%s:", argv[optind]);     // c
-    if (A->c && !A->l && !A->v) printf("%d\n", counter);             // c
+    if (A->l && counter > 0 && !A->c) printf("%s\n", argv[optind]);
+    if (A->c && A->c_flag && !A->h) printf("%s:", argv[optind]);
+    if (A->c && !A->l && !A->v) printf("%d\n", counter);
     if (A->c && !A->l && A->v) printf("%d\n", str_number - counter);
     if (A->c && A->l) {
       if (counter > 0) {
         counter = 1;
-        printf("%d\n%s\n", counter, argv[optind]);  // cl
+        printf("%d\n%s\n", counter, argv[optind]);
       } else
         printf("%d\n", counter);
     }
@@ -133,7 +134,6 @@ void output(char *argv[], Flags *A) {
     if (!A->s)
       fprintf(stderr, "grep: %s: No such file or directory\n", argv[optind]);
   }
-  free(A->str_regexec);
 }
 
 void f_flag(Flags *A) {
